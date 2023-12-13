@@ -1,17 +1,56 @@
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 export default function LoginPage() {
+  const navigate = useNavigate();
+
+  const [login, setLogin] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleOnChange = (event) => {
+    setLogin((prevValue) => {
+      return {
+      ...prevValue,
+      [event.target.name]: event.target.value,
+    }
+    })
+    ;
+  };
+
+  const handleOnSubmit = async (event) => {
+    event.preventDefault();
+    console.log(login, ',,,');
+    try {
+      const response  = await axios.post(
+        "http://localhost:3000/users/login",
+        login
+      );
+
+      const responseData = response.data.access_token
+      // console.log(response, "<< ini response")
+  
+      localStorage.setItem("access_token", responseData);
+      navigate("/home");
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <section className="relative flex flex-wrap lg:h-screen lg:items-center">
         <div className="w-full px-4 py-12 border sm:px-6 sm:py-16 lg:w-1/2 lg:px-8 lg border-opacity-70 backdrop-blur bg-secondary">
           <div className="max-w-lg mx-auto text-center">
-            <h1 className="text-2xl font-bold sm:text-3xl">
-                SIGN IN
-            </h1>
-            <p className="mt-4 text-gray-500">
-              Sign in to your account
-            </p>
+            <h1 className="text-2xl font-bold sm:text-3xl">SIGN IN</h1>
+            <p className="mt-4 text-gray-500">Sign in to your account</p>
           </div>
-          <form className="max-w-md mx-auto mt-8 mb-0 space-y-4">
+          <form
+            className="max-w-md mx-auto mt-8 mb-0 space-y-4"
+            onSubmit={handleOnSubmit}
+          >
             <div>
               <label htmlFor="email" className="sr-only">
                 Email
@@ -21,6 +60,9 @@ export default function LoginPage() {
                   type="email"
                   className="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12"
                   placeholder="Enter email"
+                  name="email"
+                  value={login.email}
+                  onChange={handleOnChange}
                 />
                 <span className="absolute inset-y-0 grid px-4 end-0 place-content-center">
                   <svg
@@ -49,6 +91,9 @@ export default function LoginPage() {
                   type="password"
                   className="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12"
                   placeholder="Enter password"
+                  name="password"
+                  value={login.password}
+                  onChange={handleOnChange}
                 />
                 <span className="absolute inset-y-0 grid px-4 end-0 place-content-center">
                   <svg
@@ -76,10 +121,8 @@ export default function LoginPage() {
             </div>
             <div className="flex items-center justify-between">
               <p className="text-sm text-gray-500">
-                No account? 
-                <a className="underline" href="">
-                  Sign up
-                </a>
+                No account?
+                <a className="underline">Sign up</a>
               </p>
               <button
                 type="submit"

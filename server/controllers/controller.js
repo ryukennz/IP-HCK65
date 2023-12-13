@@ -16,14 +16,14 @@ module.exports = class Controller {
                 where: { email }
             })
             
-            if (!user) throw ({ name: `BadRequest`, message: `You are not logged in` })
+            if (!user) throw ({ name: `BadRequest`, message: `You don't have an account` })
             
             const isComparePassword = comparePassword(password, user.password)
 
             if (!isComparePassword) throw ({ name: `BadRequest`, message: `Password is wrong`, status: 401 })
 
             const access_token = signToken({ id: user.id })
-            // console.log(access_token, "<< ini kita dapat akses token");
+            console.log(access_token, "<< ini kita dapat akses token");
             res.status(200).json({ access_token })
 
         } catch (error) {
@@ -37,7 +37,7 @@ module.exports = class Controller {
         }
     }
 
-    static async userRegsiter(req, res) {
+    static async userRegister(req, res) {
 
         try {
             const { username, email, password } = req.body
@@ -67,8 +67,11 @@ module.exports = class Controller {
                 }
             })
             res.status(200).json({data: data})
+
         } catch (error) {
+
             console.log(error);
+            
         }
     }
 }
