@@ -21,7 +21,7 @@ export default function LoginPage() {
 
   const handleOnSubmit = async (event) => {
     event.preventDefault();
-    console.log(login, ',,,');
+    // console.log(login, ',,,');
     try {
       const response  = await axios.post(
         "http://localhost:3000/users/login",

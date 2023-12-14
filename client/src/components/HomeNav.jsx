@@ -1,4 +1,20 @@
+import { useNavigate } from "react-router-dom";
+
+
 export default function HomeNav() {
+  const navigate = useNavigate()
+  
+  const onButtonHome = () => {
+    navigate('/home')
+  }
+
+  const onAboutUsButton = () => {
+    navigate('/about-us')
+  }
+  
+  const onCats = () => {
+    navigate('/cats')
+  }
   return (
     <>
       <nav className="relative flex items-center justify-between px-4 py-4 bg-primary">
@@ -12,7 +28,10 @@ export default function HomeNav() {
         </a>
         <ul className="absolute hidden transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 lg:flex lg:mx-auto lg:items-center lg:w-auto lg:space-x-6">
           <li>
-          <button type="button bg-secondary text-sm text-gray-400 hover:text-gray-500">
+          <button 
+          type="button bg-secondary text-sm text-gray-400 hover:text-gray-500"
+          onClick={onButtonHome}
+          >
                 Home
             </button>
           </li>
@@ -33,7 +52,10 @@ export default function HomeNav() {
             </svg>
           </li>
           <li>
-            <button type="button bg-secondary text-sm text-gray-400 hover:text-gray-500">
+            <button 
+            type="button bg-secondary text-sm text-gray-400 hover:text-gray-500"
+            onClick={onAboutUsButton}
+            >
                 About us
             </button>
           </li>
@@ -54,8 +76,11 @@ export default function HomeNav() {
             </svg>
           </li>
           <li>
-          <button type="button bg-secondary text-sm text-gray-400 hover:text-gray-500">
-            Contact
+          <button 
+          type="button bg-secondary text-sm text-gray-400 hover:text-gray-500"
+          onClick={onCats}
+          >
+            Cats
             </button>
           </li>
         </ul>

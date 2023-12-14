@@ -4,6 +4,9 @@ import {
 import HomePage from "./views/HomePage";
 import LoginPage from "./views/LoginPage";
 import RegisterPage from "./views/RegisterPage";
+import AboutUsPage from "./views/AboutUsPage";
+import CatsPage from "./views/CatsPage";
+
 
 const router = createBrowserRouter([
   {
@@ -17,6 +20,14 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <LoginPage />
+  },
+  {
+    path: "/about-us",
+    element: <AboutUsPage />
+  },
+  {
+    path: "/cats",
+    element: <CatsPage />
   }
 ]);
 
