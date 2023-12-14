@@ -1,35 +1,61 @@
-import {
-  createBrowserRouter,
-} from "react-router-dom";
+import { createBrowserRouter, redirect } from "react-router-dom";
 import HomePage from "./views/HomePage";
 import LoginPage from "./views/LoginPage";
 import RegisterPage from "./views/RegisterPage";
 import AboutUsPage from "./views/AboutUsPage";
 import CatsPage from "./views/CatsPage";
+import FavCats from "./views/FavCats";
 
 
 const router = createBrowserRouter([
   {
     path: "/home",
-    element: <HomePage />
+    element: <HomePage />,
+    loader: () => {
+      let token = localStorage.getItem("access_token");
+      if (!token) {
+        throw redirect("/");
+      } else {
+        return null;
+      }
+    },
   },
   {
     path: "/register",
-    element: <RegisterPage />
+    element: <RegisterPage />,
   },
   {
     path: "/",
-    element: <LoginPage />
+    element: <LoginPage />,
+    loader: () => {
+      let token = localStorage.getItem("access_token");
+      if (token) {
+        throw redirect("/home");
+      } else {
+        return null;
+      }
+    },
   },
   {
     path: "/about-us",
-    element: <AboutUsPage />
+    element: <AboutUsPage />,
   },
   {
     path: "/cats",
-    element: <CatsPage />
+    element: <CatsPage />,
+    loader: () => {
+      let token = localStorage.getItem("access_token");
+      if (!token) {
+        throw redirect("/");
+      } else {
+        return null;
+      }
+    }
+  },
+  {
+    path: "/fav-cats",
+    element: <FavCats />
   }
 ]);
 
-
-export default router
+export default router;

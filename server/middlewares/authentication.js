@@ -14,7 +14,9 @@ async function authenticate(req, res, next) {
 
         const payload = verifyToken(token)
 
-        let user = await User.findOne(payload.id)
+        let user = await User.findOne({
+            where: {id: payload.id}
+        })
 
         if (!user) throw { name: `InvalidToken` }
 

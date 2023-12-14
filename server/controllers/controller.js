@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Cats } = require('../models');
 const { comparePassword } = require('../helpers/bcrypt');
 const { signToken } = require('../helpers/jwt');
 const axios = require('axios');
@@ -7,9 +7,11 @@ const nodemailer = require('nodemailer');
 
 module.exports = class Controller {
 
+    // USER CONTROLLER
     static async userLogin(req, res) {
         try {
             const { email, password } = req.body
+            // console.log(req.body, "<<<< req body");
             if (!email) throw ({ name: `BadRequest` })
             
             if (!password) throw ({ name: `BadRequest` })
@@ -71,13 +73,6 @@ module.exports = class Controller {
                 });
               
                 console.log("Message sent: %s", info.messageId);
-                // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-              
-                //
-                // NOTE: You can go to https://forwardemail.net/my-account/emails to see your email delivery status and preview
-                //       Or you can use the "preview-email" npm package to preview emails locally in browsers and iOS Simulator
-                //       <https://github.com/forwardemail/preview-email>
-                //
               }
               
               main().catch(console.error);
@@ -91,22 +86,62 @@ module.exports = class Controller {
         }
     }
 
-    // static async getCatsData(req, res) {
-    //     try {
-    //         // const data = await axios.get('/')
-    //         let offset = 'abyssinian';
-    //         const data = await axios.get('https://api.api-ninjas.com/v1/cats?name=' + name, {
-    //             headers: {
-    //                 'X-Api-Key': process.env.API_NINJAS_KEY
-    //             }
-    //         })
+    
+    // CATS CONTROLLER
+    static async getCatsData(req, res) {
+        try {
+            // const data = await axios.get('/')
+            const data = await axios.get('https://api.thecatapi.com/v1/images/search?limit=10')
 
-    //         res.status(200).json({data: data})
+            // console.log(data, "<<< data");
 
-    //     } catch (error) {
+            res.status(200).json({data: data.data})
 
-    //         console.log(error);
+        } catch (error) {
+
+            console.log(error);
             
-    //     }
-    // }
+        }
+    }
+
+    static async favCatsById(req, res) {
+        console.log(req.user.id, "<<< req user");
+        try {
+            // console.log(req.params.id);
+            const { url } = req.body
+            const data = await axios.get('https://api.thecatapi.com/v1/images/search?limit=10')
+
+            const setData = data.data.filter(el => 
+                    el.id = req.user.id
+            )
+
+
+            const cats = await Cats.create({
+                imgUrl: url,
+                UserId: req.user.id
+            })
+
+            console.log(setData, "<<< in iset data");
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    static async showFavCats(req, res) {
+        
+        try {
+            // const users = await User.findOne({
+            //     where : {
+            //         id: req.user.id
+            //     },
+            //     includes: {
+            //         model: Cats
+            //     }
+            // })
+            console.log(users, "<<<");
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }
