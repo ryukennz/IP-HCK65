@@ -10,15 +10,7 @@ import FavCats from "./views/FavCats";
 const router = createBrowserRouter([
   {
     path: "/home",
-    element: <HomePage />,
-    loader: () => {
-      let token = localStorage.getItem("access_token");
-      if (!token) {
-        throw redirect("/");
-      } else {
-        return null;
-      }
-    },
+    element: <HomePage />
   },
   {
     path: "/register",

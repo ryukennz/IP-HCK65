@@ -1,8 +1,70 @@
+import { useEffect, useState } from "react";
+import HomeNav from "../components/HomeNav";
+import axios from "axios";
 export default function FavCats() {
+
+  const [cats, setCats] = useState([]);
+
+  useEffect(() => {
+    fetchdata();
+  }, []);
+
+  const fetchdata = async () => {
+    try {
+      const data = await axios.get(`http://localhost:3000/cats/fav-cats`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+      setCats(data.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleDelete = async (id) => {
+    try {
+      // console.log(id, "<< id");
+        // Ganti URL dengan endpoint delete favCats pada server Anda
+        const response = await axios.delete(`http://localhost:3000/cats/fav-cats/${id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+        });
+
+        console.log(response.data.message);
+
+    } catch (error) {
+        console.log(error);
+    }
+};
+  
     return (
-        <div>
-            <h1>User names</h1>
-            <h2>Fav Cats</h2>
-        </div>
-    )
+        <>
+          <HomeNav />
+          <div className="flex flex-wrap my-10 items-center justify-center">
+            {cats.map((el) => (
+              <div key={el.id} className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 p-4">
+                <div className="bg-white rounded-lg shadow-lg">
+                  <img
+                    src={el.imgUrl}
+                    alt="img"
+                    title="img"
+                    className="object-cover w-full h-auto rounded-t-lg bg-cover"
+                  />
+                  <div className="flex flex-col justify-start w-full p-4">
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(el.id)}
+                      className="px-4 py-2 my-4 text-white bg-primary hover:bg-secondary"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      );
 }

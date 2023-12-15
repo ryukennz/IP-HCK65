@@ -1,11 +1,20 @@
+import { useNavigate } from "react-router-dom";
+
 export default function RegisterPage() {
+  const navigate = useNavigate()
+
+  const onRegisterNav = () => {
+    navigate("/");
+  }
+
+
     return (
         <>
         <section className="relative flex flex-wrap lg:h-screen lg:items-center">
         <div className="relative w-full h-64 sm:h-96 lg:h-full lg:w-1/2">
             <img
               alt="Welcome"
-              src="https://images.unsplash.com/photo-1630450202872-e0829c9d6172?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"
+              src="https://wallpaperaccess.com/download/1920x1080-cat-5922691"
               className="absolute inset-0 object-cover w-full h-full"
             />
           </div>
@@ -84,6 +93,7 @@ export default function RegisterPage() {
               <div className="flex items-center justify-between">
                 <button
                   type="submit"
+                  onClick={onRegisterNav}
                   className="inline-block px-5 py-3 text-sm font-medium text-white bg-blue-500 rounded-lg"
                 >
                   Submit

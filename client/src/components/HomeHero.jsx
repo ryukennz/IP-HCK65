@@ -6,7 +6,7 @@ export default function HomeHero() {
     <div className="relative max-w-screen-xl px-4 py-32 mx-auto sm:px-6 lg:flex lg:h-screen lg:items-center lg:px-8">
       <div className="max-w-xl text-center ltr:sm:text-left rtl:sm:text-right">
         <h1 className="text-3xl text-primary extrabold text- sm:text-5xl">
-          Find your favorite trivia
+          Find your favorite Funny Pics
           <strong className="block font-extrabold text-secondary">
             {" "}
             Cat Here.{" "}

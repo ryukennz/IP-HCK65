@@ -1,13 +1,40 @@
-import { useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import Axios from "axios";
 import { useNavigate } from "react-router-dom";
+// import "dotenv";
+
 export default function LoginPage() {
   const navigate = useNavigate();
-
   const [login, setLogin] = useState({
     email: "",
     password: "",
   });
+
+  const handleCredentialResponse = async (response) => {
+    try {
+      const google_token = response.credential
+      const {data} = await Axios.post('http://localhost:3000/users/google-login', {google_token: google_token});
+      localStorage.setItem('access_token', data.access_token);
+
+      navigate('/home')
+
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+
+  useEffect(() => {
+    window.google.accounts.id.initialize({
+      client_id: '758065923784-2kh44g7bt9ivb1kbnvrfcn4qfij2986l.apps.googleusercontent.com',
+      callback: handleCredentialResponse,
+    })
+    window.google.accounts.id.renderButton(
+      document.getElementById("buttonDiv"),
+      {theme: "outline", size: "large"}
+    )
+  }, [])
+  
 
   const handleOnChange = (event) => {
     setLogin((prevValue) => {
@@ -16,14 +43,13 @@ export default function LoginPage() {
       [event.target.name]: event.target.value,
     }
     })
-    ;
   };
 
   const handleOnSubmit = async (event) => {
     event.preventDefault();
     // console.log(login, ',,,');
     try {
-      const response  = await axios.post(
+      const response  = await Axios.post(
         "http://localhost:3000/users/login",
         login
       );
@@ -38,6 +64,10 @@ export default function LoginPage() {
       console.log(error);
     }
   };
+
+  const onRegisterNav = () => {
+    navigate("/register");
+  }
 
   return (
     <>
@@ -122,7 +152,10 @@ export default function LoginPage() {
             <div className="flex items-center justify-between">
               <p className="text-sm text-gray-500">
                 No account?
-                <a className="underline">Sign up</a>
+                  <button 
+                  className="underline"
+                  onClick={onRegisterNav}
+                  >Sign up</button>
               </p>
               <button
                 type="submit"
@@ -130,13 +163,19 @@ export default function LoginPage() {
               >
                 Sign in
               </button>
+              
+            </div>
+            <div 
+            id="buttonDiv"
+            type="button"
+            >
             </div>
           </form>
         </div>
         <div className="relative w-full h-64 sm:h-96 lg:h-full lg:w-1/2">
           <img
             alt="Welcome"
-            src="https://images.unsplash.com/photo-1630450202872-e0829c9d6172?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"
+            src="https://wallpaperaccess.com/download/1920x1080-cat-5922864"
             className="absolute inset-0 object-cover w-full h-full"
           />
         </div>

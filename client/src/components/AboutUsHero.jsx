@@ -5,10 +5,10 @@ export default function AboutUsHero() {
       <div className="relative max-w-screen-xl px-4 py-32 mx-auto sm:px-6 lg:flex lg:h-screen lg:items-center lg:px-8">
         <div className="max-w-xl mx-[80px] text-center ltr:sm:text-left rtl:sm:text-right">
           <h1 className="text-3xl text-primary extrabold text- sm:text-5xl">
-            TrivCat
+            PicCat!
           </h1>
           <p className="max-w-lg mt-4 sm:text-xl/relaxed text-secondary">
-            Welcome to TrivCat, to the
+            Welcome to PicCat, to the
             purrfect corner of the internet dedicated to all things feline! At
             Cat Trivia, we are passionate about celebrating the mysterious,
             playful, and downright enchanting world of cats. Our mission is to

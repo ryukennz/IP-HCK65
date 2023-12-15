@@ -48,7 +48,7 @@ export default function CatsPage() {
   return (
     <div>
     <HomeNav />
-    <div className="flex flex-wrap gap-20 justify-center">
+    <div className="flex flex-wrap gap-20 justify-center my-10">
       {loading ? ( <h1 className="flex text-center "> Loading... </h1>) : (
           <>
           {cats.map(el => {
@@ -74,7 +74,7 @@ export default function CatsPage() {
                   onClick={() => handleOnClick(el.url)}
                   className="px-4 py-2 my-4 text-white bg-primary hover:bg-secondary"
                 >
-                  Favorites
+                  Favorites 🐾
                 </button>
               </div>
             </div>
