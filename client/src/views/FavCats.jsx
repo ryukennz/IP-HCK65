@@ -1,49 +1,56 @@
 import { useEffect, useState } from "react";
 import HomeNav from "../components/HomeNav";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 export default function FavCats() {
-
+  const navigate = useNavigate();
   const [cats, setCats] = useState([]);
 
-  useEffect(() => {
-    fetchdata();
-  }, []);
+  
 
+  
   const fetchdata = async () => {
     try {
-      const data = await axios.get(`http://localhost:3000/cats/fav-cats`, {
+      const {data} = await axios.get(`http://localhost:3000/cats/fav-cats`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       });
-      setCats(data.data.data);
+      const finalData = data
+      setCats(finalData);
     } catch (error) {
       console.log(error);
     }
   }
-
+  
   const handleDelete = async (id) => {
     try {
       // console.log(id, "<< id");
-        // Ganti URL dengan endpoint delete favCats pada server Anda
-        const response = await axios.delete(`http://localhost:3000/cats/fav-cats/${id}`, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-        });
-
-        console.log(response.data.message);
-
+      // Ganti URL dengan endpoint delete favCats pada server Anda
+      const response = await axios.delete(`http://localhost:3000/cats/fav-cats/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+      
+      navigate('/fav-cats')
+      
+      console.log(response.data.message);
+      
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-};
+  };
   
-    return (
-        <>
+  useEffect(() => {
+    fetchdata();
+  }, [cats]);
+  return (
+    <>
           <HomeNav />
           <div className="flex flex-wrap my-10 items-center justify-center">
-            {cats.map((el) => (
+            {cats&&cats.map((el) => (
+              
               <div key={el.id} className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 p-4">
                 <div className="bg-white rounded-lg shadow-lg">
                   <img

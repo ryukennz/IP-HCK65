@@ -10,7 +10,7 @@ module.exports = class Controller {
 
     // USER CONTROLLER
 
-    static async googleLogin(req, res) {
+    static async googleLogin(req, res, next) {
         try {
             const { google_token } = req.body
 
@@ -39,10 +39,11 @@ module.exports = class Controller {
             })
         } catch (error) {
             console.log(error);
+            
         }
     }
 
-    static async userLogin(req, res) {
+    static async userLogin(req, res, next) {
         try {
             const { email, password } = req.body
             // console.log(req.body, "<<<< req body");
@@ -61,12 +62,13 @@ module.exports = class Controller {
             if (!isComparePassword) throw ({ name: `BadRequest`, message: `Password is wrong`, status: 401 })
 
             const access_token = signToken({ id: user.id })
-            console.log(access_token, "<< ini kita dapat akses token");
+            // console.log(access_token, "<< ini kita dapat akses token");
             res.status(200).json({ access_token })
 
         } catch (error) {
 
             console.log(error);
+            
 
             if (error.name === `BadRequest`) {
                 return res.status(400).json({ message: error.message });
@@ -75,7 +77,7 @@ module.exports = class Controller {
         }
     }
 
-    static async userRegister(req, res) {
+    static async userRegister(req, res, next) {
 
         try {
             const { username, email, password } = req.body
@@ -114,6 +116,7 @@ module.exports = class Controller {
         } catch (error) {
 
             console.log(error);
+            
 
             res.status(500).json({ message: `Internal Server Error` })
 
@@ -125,29 +128,36 @@ module.exports = class Controller {
     static async getCatsData(req, res) {
         try {
             // const data = await axios.get('/')
-            const data = await axios.get('https://api.thecatapi.com/v1/images/search?limit=10')
+            const {data} = await axios.get('https://api.thecatapi.com/v1/images/search?limit=10', {
+                headers: {
+                    'x-api-key': process.env.THE_CAT_API_KEY
+                }
+            })
 
             // console.log(data, "<<< data");
 
-            res.status(200).json({ data: data.data })
+            const showData = data
+
+            res.status(200).json(showData)
 
         } catch (error) {
 
             console.log(error);
+            
 
         }
     }
 
-    static async favCatsById(req, res) {
+    static async favCatsById(req, res, next) {
         console.log(req.user.id, "<<< req user");
         try {
             // console.log(req.params.id);
             const { url } = req.body
-            const data = await axios.get('https://api.thecatapi.com/v1/images/search?limit=10')
+            // const data = await axios.get('https://api.thecatapi.com/v1/images/search?limit=10')
 
-            const setData = data.data.filter(el =>
-                el.id = req.user.id
-            )
+            // const setData = data.data.filter(el =>
+            //     el.id = req.user.id
+            // )
 
 
             const cats = await Cats.create({
@@ -155,14 +165,23 @@ module.exports = class Controller {
                 UserId: req.user.id
             })
 
-            console.log(setData, "<<< in iset data");
+            if(!cats) {
+                return res.status(400).json({
+                    message: `Failed adding cat to favorite list`
+                })
+            }
+
+            // console.log(setData, "<<< in iset data");
+
+            res.status(201).json({message: `Success adding cat to favorite list`})
 
         } catch (error) {
             console.log(error);
+            
         }
     }
 
-    static async showFavCats(req, res) {
+    static async showFavCats(req, res, next) {
 
         try {
             const findCats = await Cats.findAll()
@@ -175,14 +194,16 @@ module.exports = class Controller {
             //     }
             // })
 
-            res.status(200).json({ data: findCats })
+            res.status(200).json(findCats)
             // console.log(findCats, "<<<");
         } catch (error) {
             console.log(error);
+            next(error)
+            
         }
     }
 
-    static async deleteFavCats(req, res) {
+    static async deleteFavCats(req, res, next) {
         try {
             const { id } = req.params;
 
@@ -200,11 +221,12 @@ module.exports = class Controller {
             }
         } catch (error) {
             console.log(error);
+            
             res.status(500).json({ message: 'Internal Server Error' });
         }
     }
 
-    static async editProfile(req, res) {
+    static async editProfile(req, res, next) {
         try {
             const {id} = req.params
             const{ username } = req.body
@@ -216,6 +238,7 @@ module.exports = class Controller {
             res.status(200).json({message: `Data Updated`})
         } catch (error) {
             console.log(error);
+            
         }
     }
 }
