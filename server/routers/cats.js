@@ -6,6 +6,7 @@ const cats = express.Router()
 cats.get('/', Controller.getCatsData)
 
 cats.use(authenticate)
+
 cats.post('/', Controller.favCatsById)
 cats.get('/fav-cats', Controller.showFavCats )
 cats.delete('/fav-cats/:id', Controller.deleteFavCats)

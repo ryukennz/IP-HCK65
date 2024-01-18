@@ -23,10 +23,6 @@ module.exports = (sequelize, DataTypes) => {
         msg: 'Username already taken'
       },
       validate: {
-        len: {
-          args: 5,
-          msg: 'Username must be minimum 5 characters'
-        },
         notEmpty: {
           args: true,
           msg: 'Username cannot be empty'

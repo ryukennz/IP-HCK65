@@ -39,6 +39,7 @@ module.exports = class Controller {
             })
         } catch (error) {
             console.log(error);
+            next(error)
             
         }
     }
@@ -46,34 +47,29 @@ module.exports = class Controller {
     static async userLogin(req, res, next) {
         try {
             const { email, password } = req.body
-            // console.log(req.body, "<<<< req body");
-            if (!email) throw ({ name: `BadRequest` })
 
-            if (!password) throw ({ name: `BadRequest` })
+            if (!email || !password) throw { name: `BadRequest` }
 
             const user = await User.findOne({
-                where: { email }
+                where: {
+                    email: email
+                }
             })
 
-            if (!user) throw ({ name: `BadRequest`, message: `You don't have an account` })
+            if (!user) throw { name: `Unauthorized` }
 
-            const isComparePassword = comparePassword(password, user.password)
+            const isCorrectPassword = comparePassword(password, user.password)
+            // console.log(isCorrectPassword, "<< cek password");
 
-            if (!isComparePassword) throw ({ name: `BadRequest`, message: `Password is wrong`, status: 401 })
+            if (!isCorrectPassword) throw { name: `Unauthorized` }
 
-            const access_token = signToken({ id: user.id })
-            // console.log(access_token, "<< ini kita dapat akses token");
+            const access_token = signToken({ id: user.id})
+
             res.status(200).json({ access_token })
 
         } catch (error) {
-
             console.log(error);
-            
-
-            if (error.name === `BadRequest`) {
-                return res.status(400).json({ message: error.message });
-            }
-            res.status(500).json({ message: `Internal Server Error` })
+            next(error)
         }
     }
 
@@ -81,11 +77,21 @@ module.exports = class Controller {
 
         try {
             const { username, email, password } = req.body
+
+            if(!username || !email || !password) {
+                return res.status(400).json({
+                    message: `The required field cannot be empty`
+                })
+            }
+
             const data = await User.create({
                 username,
                 email,
                 password
             })
+
+            if(!data) throw {name: `SequelizeValidationError`}
+
             res.status(201).json({ id: data.id, email: data.email })
 
             const transporter = nodemailer.createTransport({
@@ -118,7 +124,7 @@ module.exports = class Controller {
             console.log(error);
             
 
-            res.status(500).json({ message: `Internal Server Error` })
+            next(error)
 
         }
     }
@@ -149,7 +155,7 @@ module.exports = class Controller {
     }
 
     static async favCatsById(req, res, next) {
-        console.log(req.user.id, "<<< req user");
+        // console.log(req.user.id, "<<< req user");
         try {
             // console.log(req.params.id);
             const { url } = req.body
@@ -222,22 +228,38 @@ module.exports = class Controller {
         } catch (error) {
             console.log(error);
             
-            res.status(500).json({ message: 'Internal Server Error' });
+            next(error)
         }
     }
 
     static async editProfile(req, res, next) {
         try {
             const {id} = req.params
+
+            const findUser = await User.findByPk(id)
+
+            if(!findUser) throw {name: `NotFound`}
+            
             const{ username } = req.body
-            const users = await User.findByPk(id)
-            if(!users) throw {name: `NotFound`}
-            await users.update({
-                username
+
+            if(!username) {
+                return res.status(400).json({
+                    message: `Username is required`
+                })
+            }
+
+            await findUser.update({
+                username: username
             })
+            // const users = await User.findByPk(id)
+            // if(!users) throw {name: `NotFound`}
+            // await users.update({
+            //     username
+            // })
             res.status(200).json({message: `Data Updated`})
         } catch (error) {
             console.log(error);
+            next(error)
             
         }
     }

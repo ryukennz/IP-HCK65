@@ -1,6 +1,5 @@
+const { verifyToken } = require('../helpers/jwt');
 const { User } = require('../models');
-const { verifyToken } = require('../helpers/jwt')
-
 async function authenticate(req, res, next) {
     try {
 
@@ -8,32 +7,30 @@ async function authenticate(req, res, next) {
 
         if (!token) throw { name: `InvalidToken` }
 
-        if (token.slice(0, 7) !== "Bearer ") throw { name: `InvalidToken` }
+        if (token.slice(0, 7) !== `Bearer `) throw { name: `InvalidToken` }
 
         token = token.slice(7)
 
         const payload = verifyToken(token)
 
-        if (!payload) throw { name: `InvalidToken` }
+        if(!payload) throw {name: `InvalidToken`}
 
-        let user = await User.findOne({
-            where: { id: payload.id }
-        })
+        const user = await User.findByPk(payload.id)
 
-        if (!user) throw { name: `InvalidToken` }
+        if(!user) throw {name: `InvalidToken`}
 
         req.user = {
             id: user.id,
+            role: user.role
         }
-        // console.log(token, "<< token");
 
         next()
-    } catch (error) {
 
+    } catch (error) {
         console.log(error);
         next(error)
-
     }
+
 }
 
 module.exports = authenticate

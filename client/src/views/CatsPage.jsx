@@ -7,7 +7,7 @@ import { fetchDataCat } from "../stores/fetchDataAsync";
 export default function CatsPage() {
   const { data } = useSelector((state) => state.cats);
 
-  console.log(data, "<<< dataaa");
+  // console.log(data, "<<< dataaa");
 
   const dispatch = useDispatch();
 
