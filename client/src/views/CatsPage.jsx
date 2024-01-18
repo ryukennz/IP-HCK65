@@ -3,6 +3,9 @@ import HomeNav from "../components/HomeNav";
 // import { fetchCat } from '../stores/catSlice';
 import { useEffect } from "react";
 import { fetchDataCat } from "../stores/fetchDataAsync";
+import axios from 'axios'
+import { ToastContainer, toast } from 'react-toastify';
+
 
 export default function CatsPage() {
   const { data } = useSelector((state) => state.cats);
@@ -10,6 +13,27 @@ export default function CatsPage() {
   // console.log(data, "<<< dataaa");
 
   const dispatch = useDispatch();
+
+  const handleOnClick = async (id) => {
+    try {
+      await axios.post(
+        `http://localhost:3000/cats`,
+        {
+          url: id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+      // console.log(localStorage.access_token);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  
 
   useEffect(() => {
     dispatch(fetchDataCat());
@@ -36,7 +60,7 @@ export default function CatsPage() {
                       <button
                         type="button"
                         id=""
-                        // onClick={() => handleOnClick(el.url)}
+                        onClick={() => handleOnClick(el.url)}
                         className="px-4 py-2 my-4 text-white bg-primary hover:bg-secondary"
                       >
                         Favorites 🐾

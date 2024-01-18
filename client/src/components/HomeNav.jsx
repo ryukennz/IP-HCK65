@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useEffect, useMemo, useState } from "react";
 
 export default function HomeNav() {
   const navigate = useNavigate();
@@ -15,54 +17,97 @@ export default function HomeNav() {
     navigate("/cats");
   };
 
-  const onLogin = () => {
-    if (localStorage.getItem("access_token")) {
-      localStorage.removeItem("access_token");
-      navigate("/");
-    } else {
-      navigate("/");
-    }
-  };
-
-  const onRegister = () => {
-    navigate("/register");
-  };
-
   const onFavCats = () => {
     navigate("/fav-cats");
   };
 
+  const [user, setUser] = useState({
+    id: 0,
+    email: "",
+    subscription: "free",
+  });
+
+  const handleLogOut = () => {
+    localStorage.removeItem("access_token");
+    navigate("/");
+  };
+
+  const fetchUser = async () => {
+    const { data } = await axios.get("http://localhost:3000/users/me", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    });
+
+    setUser(data);
+  };
+
+  useEffect(() => {
+    if (localStorage.getItem("access_token")) {
+      fetchUser();
+    }
+  }, [])
+
+  
+
+  const handleOnUpgrade = async () => {
+    try {
+      const { data } = await axios.get(
+        "http://localhost:3000/payments/midtrans/token",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+      window.snap.pay(data.transaction_token, {
+        onSuccess: async function () {
+          const form = {
+            orderId: data.orderId,
+          };
+
+          await axios.patch("http://localhost:3000/users/me/upgrade", form, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          });
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const isLogin = useMemo(() => {
+    return !!localStorage.getItem("access_token");
+  }, []);
+
+  const isFree = isLogin && user.subscription === "free";
+  const isPremium = isLogin && user.subscription === "premium";
+  
+
   return (
     <>
       <nav className="flex items-center justify-between px-4 py-4 bg-primary">
-
         <div className="lg:hidden">
           <button
             className="text-white focus:outline-none"
-            onClick={() => document.getElementById("nav-menu").classList.toggle("hidden")}
+            onClick={() =>
+              document.getElementById("nav-menu").classList.toggle("hidden")
+            }
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              stroke="currentColor"
-              className="w-6 h-6"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16m-7 6h7"
-              />
-            </svg>
+            
           </button>
         </div>
 
-        <svg className="h-10 text-white" alt="logo" viewBox="0 0 10240 10240">
-          {/* ... (kode lainnya) */}
-        </svg>
+        <a className="flex items-center ml-6" href="#">
+              <h5>{isPremium ? "Premium" : "CatMeme"}</h5>
+            </a>
 
-        <ul id="nav-menu" className="hidden lg:flex lg:items-center lg:w-auto lg:space-x-6">
+        <ul
+          id="nav-menu"
+          className="hidden lg:flex lg:items-center lg:w-auto lg:space-x-6"
+        >
           <li>
             <button
               type="button"
@@ -81,8 +126,7 @@ export default function HomeNav() {
               About us
             </button>
           </li>
-          {localStorage.getItem('access_token') ? (
-            <>
+          <>
               <li>
                 <button
                   type="button"
@@ -102,34 +146,37 @@ export default function HomeNav() {
                 </button>
               </li>
             </>
-          ) : ""}
           <li className="lg:hidden">
             <button
               type="button"
               className="text-white text-sm hover:text-gray-300"
-              onClick={onLogin}
+              // onClick={onLogin}
             >
-              {localStorage.getItem('access_token') ? "Log Out" : "Sign in"}
+              {localStorage.getItem("access_token") ? "Log Out" : "Sign in"}
             </button>
           </li>
         </ul>
 
         <div className="lg:flex lg:items-center lg:space-x-6">
+          {isFree && (
           <button
             className="px-6 py-2 text-sm font-bold text-gray-900 transition duration-200 hidden lg:inline-block lg:ml-auto lg:mr-3 bg-gray-50 hover:bg-gray-100 rounded-xl"
-            onClick={onLogin}
+            onClick={handleOnUpgrade}
           >
-            {localStorage.getItem('access_token') ? "Log Out" : "Sign in"}
+            Upgrade
+          </button>
+          )}
+          {isLogin && (
+          <button
+            className="px-6 py-2 text-sm font-bold text-gray-900 transition duration-200 hidden lg:inline-block lg:ml-auto lg:mr-3 bg-gray-50 hover:bg-gray-100 rounded-xl"
+            onClick={handleLogOut}
+          >
+            Logout
           </button>
 
-          {localStorage.getItem('access_token') ? "" :
-            <button
-              className="px-6 py-2 text-sm font-bold text-gray-900 transition duration-200 hidden lg:inline-block lg:ml-auto lg:mr-3 bg-gray-50 hover:bg-gray-100 rounded-xl"
-              onClick={onRegister}
-            >
-              Sign up
-            </button>
-          }
+          )}
+
+         
         </div>
       </nav>
     </>

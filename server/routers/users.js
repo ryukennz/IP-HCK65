@@ -10,6 +10,10 @@ users.post('/google-login', Controller.googleLogin)
 
 users.use(authenticate)
 
+users.get('/me', Controller.currentUser)
+
 users.patch('/update-profile/:id', authorization, Controller.editProfile)
+
+users.patch('/me/upgrade', Controller.upgradeAccount)
 
 module.exports = users

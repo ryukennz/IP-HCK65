@@ -19,10 +19,7 @@ async function authenticate(req, res, next) {
 
         if(!user) throw {name: `InvalidToken`}
 
-        req.user = {
-            id: user.id,
-            role: user.role
-        }
+        req.user = user
 
         next()
 

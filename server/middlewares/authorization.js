@@ -8,6 +8,7 @@ module.exports = async function authorization(req, res, next) {
         const getEditUser = await User.findByPk(id)
 
         const user = req.user.id
+        
         if (user !== getEditUser.id) throw { name: `Forbidden` }
         
         next()

@@ -7,7 +7,7 @@ cats.get('/', Controller.getCatsData)
 
 cats.use(authenticate)
 
-cats.post('/', Controller.favCatsById)
+cats.post('/', Controller.addCats)
 cats.get('/fav-cats', Controller.showFavCats )
 cats.delete('/fav-cats/:id', Controller.deleteFavCats)
 

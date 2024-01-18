@@ -13,7 +13,7 @@ export default function LoginPage() {
   const handleCredentialResponse = async (response) => {
     try {
       const google_token = response.credential
-      console.log(google_token, "< google");
+      // console.log(google_token, "< google");
       const {data} = await Axios.post('http://localhost:3000/users/google-login', {google_token: google_token});
       localStorage.setItem('access_token', data.access_token);
 
@@ -51,7 +51,7 @@ export default function LoginPage() {
     // console.log(login, ',,,');
     try {
       const response  = await Axios.post(
-        "https://cat.fernandoasite.online/users/login",
+        "http://localhost:3000/users/login",
         login
       );
 

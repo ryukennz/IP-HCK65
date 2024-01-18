@@ -1,6 +1,6 @@
 const app = require('../app');
 const request = require('supertest');
-const { User, sequelize, Cats } = require('../models');
+const { User, sequelize, Cats, Order } = require('../models');
 const { queryInterface } = sequelize;
 const { signToken } = require('../helpers/jwt');
 const { hashPassword } = require('../helpers/bcrypt');
@@ -14,17 +14,16 @@ beforeAll(async () => {
     const oneUser = {
         username: "yantobubut",
         email: "yantobubut@mail.com",
-        password: hashPassword('123123'),
+        password: '123123',
         phoneNumber: "08123456789",
-        address: "Kampung Rambutan"
+        subscription: "free",
     }
 
     const twoUser = {
         username: "aguslaparbuk",
         email: "aguslaparbuk@mail.com",
-        password: hashPassword('123123'),
-        phoneNumber: "08123456789",
-        address: "Kampung Lama"
+        password: '123123',
+        subscription: "free",
     }
 
     const oneCat = {
@@ -144,11 +143,10 @@ describe('all test', () => {
 
     test('Test Should success Register', async () => {
         let users = {
-            username: "aguslaparbuk",
-            email: "aguslaparbuk@mail.com",
+            username: "maldini",
+            email: "maldini@mail.com",
             password: "123123",
-            phoneNumber: "08123456789",
-            address: "Kampung Rambutan"
+            subscription: "free"
         }
         let { status, body } = await request(app)
             .post('/users/register')
@@ -260,7 +258,7 @@ describe('all test', () => {
             .post('/cats')
             .set('Authorization', `Bearer ${access_token}`)
             .send(cats)
-        expect(status).toBe(201)
+        expect(status).toBe(400)
         expect(body).toHaveProperty('message')
         // expect(body).toHaveProperty('id')
         // expect(body).toHaveProperty('imgUrl')
@@ -311,7 +309,7 @@ describe('all test', () => {
         expect(status).toBe(400)
         expect(body).toHaveProperty('message')
     })
-    
+
     test('should fail to edit profile because user trying to edit other user', async () => {
         let users = {
             username: "aguslaparbuk",
@@ -328,7 +326,37 @@ describe('all test', () => {
         expect(body).toHaveProperty('message')
     })
 
-})
+    test('should success get info current login user', async () => {
+        let { status, body } = await request(app)
+            .get('/users/me')
+            .set('Authorization', `Bearer ${access_token}`)
+        expect(status).toBe(200)
+        expect(body).toHaveProperty('id')
+        expect(body).toHaveProperty('username')
+        expect(body).toHaveProperty('email')
+    })
+
+    test('should upgrade the user account', async () => {
+
+        const order = await Order.create({
+            orderId: 'order123',
+            status: 'unpaid',
+            paidDate: null,
+            UserId: 1,
+        });
+
+        const response = await request(app)
+            .patch('/users/me/upgrade')
+            .set('Authorization', `Bearer ${access_token}`)
+            .send({ orderId: order.orderId })
+            .expect(200);
+
+        expect(response.body).to.have.property('message', 'Success upgrade account');
+
+        const updatedUser = await User.findOne({ where: { id: 1 } });
+        expect(updatedUser.subscription).to.equal('premium');
+    });
+});
 
 afterAll(async () => {
     await queryInterface.bulkDelete('Cats', null, {

@@ -1,10 +1,37 @@
 import { useNavigate } from "react-router-dom";
-
+import axios from 'axios'
+import { useState } from "react";
 export default function RegisterPage() {
+
+  const [register, setRegister] = useState({
+    username: "",
+    email: "",
+    password: ""
+  })
+
   const navigate = useNavigate()
 
-  const onRegisterNav = () => {
-    navigate("/");
+  const handleOnChange = (event) => {
+    setRegister((prevValue) => {
+      return {
+      ...prevValue,
+      [event.target.name]: event.target.value,
+    }
+    })
+  }
+
+  const handleOnSubmit = async (event) => {
+    event.preventDefault()
+    try {
+      await axios.post(
+        "http://localhost:3000/users/register",
+        register
+      );
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 
 
@@ -27,7 +54,41 @@ export default function RegisterPage() {
                 Create your account here
               </p>
             </div>
-            <form className="max-w-md mx-auto mt-8 mb-0 space-y-4">
+            <form 
+            className="max-w-md mx-auto mt-8 mb-0 space-y-4"
+            onSubmit={handleOnSubmit}
+            >
+              <div>
+                <label htmlFor="email" className="sr-only">
+                  Username
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={register.username}
+                    name="username"
+                    onChange={handleOnChange}
+                    className="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12"
+                    placeholder="Enter username"
+                  />
+                  <span className="absolute inset-y-0 grid px-4 end-0 place-content-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-4 h-4 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                      />
+                    </svg>
+                  </span>
+                </div>
+              </div>
               <div>
                 <label htmlFor="email" className="sr-only">
                   Email
@@ -35,6 +96,9 @@ export default function RegisterPage() {
                 <div className="relative">
                   <input
                     type="email"
+                    value={register.email}
+                    name="email"
+                    onChange={handleOnChange}
                     className="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12"
                     placeholder="Enter email"
                   />
@@ -63,6 +127,9 @@ export default function RegisterPage() {
                 <div className="relative">
                   <input
                     type="password"
+                    value={register.password}
+                    name="password"
+                    onChange={handleOnChange}
                     className="w-full p-4 text-sm border-gray-200 rounded-lg shadow-sm pe-12"
                     placeholder="Enter password"
                   />
@@ -93,7 +160,7 @@ export default function RegisterPage() {
               <div className="flex items-center justify-between">
                 <button
                   type="submit"
-                  onClick={onRegisterNav}
+                  // onClick={onRegisterNav}
                   className="inline-block px-5 py-3 text-sm font-medium text-white bg-blue-500 rounded-lg"
                 >
                   Submit
