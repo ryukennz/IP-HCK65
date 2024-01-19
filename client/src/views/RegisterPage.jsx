@@ -24,7 +24,7 @@ export default function RegisterPage() {
   const handleOnSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.post("http://localhost:3000/users/register", register);
+      await axios.post("https://cat.fernandoasite.online/users/register", register);
 
       
     } catch (error) {

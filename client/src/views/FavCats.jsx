@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import HomeNav from "../components/HomeNav";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+
 import { ToastContainer, toast } from "react-toastify";
 export default function FavCats() {
   // const navigate = useNavigate();
@@ -12,7 +12,7 @@ export default function FavCats() {
   
   const fetchdata = async () => {
     try {
-      const {data} = await axios.get(`http://localhost:3000/cats/fav-cats`, {
+      const {data} = await axios.get(`https://cat.fernandoasite.online/cats/fav-cats`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
@@ -28,7 +28,7 @@ export default function FavCats() {
     try {
       // console.log(id, "<< id");
       // Ganti URL dengan endpoint delete favCats pada server Anda
-      await axios.delete(`http://localhost:3000/cats/fav-cats/${id}`, {
+      await axios.delete(`https://cat.fernandoasite.online/cats/fav-cats/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
