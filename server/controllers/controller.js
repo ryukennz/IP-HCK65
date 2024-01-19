@@ -169,16 +169,30 @@ module.exports = class Controller {
 
             // console.log(url, "<<< lol");
 
-            const cats = await Cats.create({
-                imgUrl: url,
-                UserId: req.user.id
+            const findImgUrl = await Cats.findOne({
+                where: {
+                    imgUrl: url
+                }
             })
 
-            if (!cats) {
+            if(!findImgUrl) {
+                const cats = await Cats.create({
+                    imgUrl: url,
+                    UserId: req.user.id
+                })
+    
+                if (!cats) {
+                    return res.status(400).json({
+                        message: `Failed adding cat to favorite list`
+                    })
+                }
+                
+            } else {
                 return res.status(400).json({
-                    message: `Failed adding cat to favorite list`
+                    message: `Cat already added to favorite list`
                 })
             }
+            
 
             // console.log(setData, "<<< in iset data");
 

@@ -26,9 +26,30 @@ export default function CatsPage() {
           },
         }
       );
-      // console.log(localStorage.access_token);
+
+      toast.success("Cat added to favorite list", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     } catch (error) {
       console.log(error);
+
+      toast.error(error.response.data.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
@@ -67,36 +88,68 @@ export default function CatsPage() {
 
   return (
     <>
+      <ToastContainer />
       <div>
         <HomeNav />
         <div className="flex flex-wrap gap-20 justify-center my-10">
           {/* <h1 className="flex text-center "> Loading... </h1> */}
           <>
-          {}
-            {data?.slice(0, 4).map((el) => {
-              return (
-                <>
-                  <div className="grid grid-col-5 items-center justify-center w-full bg-white rounded-lg shadow-lg md:w-64">
-                    <img
-                      src={el.url}
-                      alt="img"
-                      title="img"
-                      className="object-cover w-full h-auto rounded-t-lg bg-cover"
-                    />
-                    <div className="flex flex-col justify-start w-full p-4">
-                      <button
-                        type="button"
-                        id=""
-                        onClick={() => handleOnClick(el.url)}
-                        className="px-4 py-2 my-4 text-white bg-primary hover:bg-secondary"
-                      >
-                        Favorites 🐾
-                      </button>
-                    </div>
-                  </div>
-                </>
-              );
-            })}
+            {isFree && (
+              <>
+                {data?.slice(0, 4).map((el) => {
+                  return (
+                    <>
+                      <div className="grid grid-col-5 items-center justify-center w-full bg-white rounded-lg shadow-lg md:w-64">
+                        <img
+                          src={el.url}
+                          alt="img"
+                          title="img"
+                          className="object-cover w-full h-auto rounded-t-lg bg-cover"
+                        />
+                        <div className="flex flex-col justify-start w-full p-4">
+                          <button
+                            type="button"
+                            id=""
+                            onClick={() => handleOnClick(el.url)}
+                            className="px-4 py-2 my-4 text-white bg-primary hover:bg-secondary"
+                          >
+                            Favorites 🐾
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })}
+              </>
+            )}
+            {isPremium && (
+              <>
+                {data.map((el) => {
+                  return (
+                    <>
+                      <div className="grid grid-col-5 items-center justify-center w-full bg-white rounded-lg shadow-lg md:w-64">
+                        <img
+                          src={el.url}
+                          alt="img"
+                          title="img"
+                          className="object-cover w-full h-auto rounded-t-lg bg-cover"
+                        />
+                        <div className="flex flex-col justify-start w-full p-4">
+                          <button
+                            type="button"
+                            id=""
+                            onClick={() => handleOnClick(el.url)}
+                            className="px-4 py-2 my-4 text-white bg-primary hover:bg-secondary"
+                          >
+                            Favorites 🐾
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })}
+              </>
+            )}
           </>
         </div>
       </div>
