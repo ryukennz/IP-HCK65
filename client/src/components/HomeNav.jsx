@@ -44,11 +44,11 @@ export default function HomeNav() {
     setUser(data);
   };
 
-  // useEffect(() => {
-  //   if (localStorage.getItem("access_token")) {
-  //     fetchUser();
-  //   }
-  // }, [fetchUser])
+  useEffect(() => {
+    if (localStorage.getItem("access_token")) {
+      fetchUser();
+    }
+  }, [fetchUser])
 
   
 
