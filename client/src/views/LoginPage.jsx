@@ -61,12 +61,34 @@ export default function LoginPage() {
       // console.log(response, "<< ini response")
   
       localStorage.setItem("access_token", responseData);
-      navigate("/home");
-
-      toast.success('Login success ✅');
       
+      // console.log("akjsdlkajsd");
+      
+      toast.success("Login success ✅", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      
+      navigate("/home");
     } catch (error) {
       console.log(error);
+      toast.error(error.response.data.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      
     }
   };
 

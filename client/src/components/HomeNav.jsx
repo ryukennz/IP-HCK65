@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+
 
 export default function HomeNav() {
   const navigate = useNavigate();
@@ -46,7 +48,7 @@ export default function HomeNav() {
     if (localStorage.getItem("access_token")) {
       fetchUser();
     }
-  }, [])
+  }, [fetchUser])
 
   
 
@@ -58,8 +60,7 @@ export default function HomeNav() {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },
-        }
-      );
+        });
       window.snap.pay(data.transaction_token, {
         onSuccess: async function () {
           const form = {
@@ -70,6 +71,17 @@ export default function HomeNav() {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
+          });
+
+          toast.success("Success upgrade account", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
           });
         },
       });
@@ -88,6 +100,7 @@ export default function HomeNav() {
 
   return (
     <>
+    <ToastContainer/>
       <nav className="flex items-center justify-between px-4 py-4 bg-primary">
         <div className="lg:hidden">
           <button

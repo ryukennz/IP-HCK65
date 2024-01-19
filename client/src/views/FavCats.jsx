@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import HomeNav from "../components/HomeNav";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 export default function FavCats() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [cats, setCats] = useState([]);
 
   
@@ -27,15 +28,26 @@ export default function FavCats() {
     try {
       // console.log(id, "<< id");
       // Ganti URL dengan endpoint delete favCats pada server Anda
-      const response = await axios.delete(`http://localhost:3000/cats/fav-cats/${id}`, {
+      await axios.delete(`http://localhost:3000/cats/fav-cats/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       });
       
-      navigate('/fav-cats')
+      // navigate('/fav-cats')
+
+      toast.success("Cat deleted from favorite list", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       
-      console.log(response.data.message);
+      // console.log(response.data.message);
       
     } catch (error) {
       console.log(error);
@@ -47,6 +59,7 @@ export default function FavCats() {
   }, [cats]);
   return (
     <>
+          <ToastContainer/>
           <HomeNav />
           <div className="flex flex-wrap my-10 items-center justify-center">
             {cats&&cats.map((el) => (

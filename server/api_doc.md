@@ -12,6 +12,7 @@ List of Available Endpoints:
 - `POST /cats`
 - `GET /cats/fav-cats`
 - `DELETE /cats/fav-cats/:id`
+- `GET /payments/midtrans/token`
 
 ### POST /login
 
@@ -116,12 +117,14 @@ _200 - OK_
 _404 - Not Found_
 
 - Body
+
   ```json
   {
     "message": "Data not found"
   }
   ```
-_400 - Bad Request_
+
+  _400 - Bad Request_
 
 - Body
   ```json
@@ -167,7 +170,7 @@ _201 - CREATED_
 - Body
   ```json
   {
-    "message" : "Success adding cat to favorite list"
+    "message": "Success adding cat to favorite list"
   }
   ```
 
@@ -176,15 +179,97 @@ _400 - Bad Request_
 - Body
   ```json
   {
-      "message": "Failed adding cat to favorite list"
+    "message": "Failed adding cat to favorite list"
   }
   ```
 
--401 - Unauthorized_
+-401 - Unauthorized\_
+
+- Body
+
+  ```json
+  {
+    "message": "Invalid token"
+  }
+  ```
+
+  ### GET /cats/fav-cats
+
+#### Description
+
+- Get the cats data
+
+#### Response
+
+_200 - OK_
+
+- Body
+
+  ```json
+  [
+    {
+        "id": integer,
+        "imgUrl": string,
+        "UserId": integer,
+        "createdAt": date,
+        "updatedAt": date
+    },
+    ...
+    ]
+  ```
+
+- 401 - Unauthorized\_
 
 - Body
   ```json
   {
     "message": "Invalid token"
+  }
+  ```
+
+### DELETE /cats/fav-cats/:id
+
+#### Description
+
+- Delete an favorite cats by id (must login first)
+
+#### Response
+
+_200 - OK_
+
+- Body
+
+  ```json
+  {
+    "message": "Favorite cat deleted successfully"
+  }
+  ```
+
+_404 - Not Found_
+
+- Body
+
+  ```json
+  {
+    "message": "Data not found"
+  }
+  ```
+
+  ### GET /payments/midtrans/token
+
+  #### Description
+
+  - Get token for midtrans payment (must login first)
+
+  #### Response
+
+  _200 - OK_
+
+  - Body
+
+  ```json
+  {
+    "transaction_token": string,
+    "orderId": string
   }
   ```
