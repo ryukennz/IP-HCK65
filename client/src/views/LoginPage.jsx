@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // import "dotenv";
 
 export default function LoginPage() {
@@ -60,6 +62,8 @@ export default function LoginPage() {
   
       localStorage.setItem("access_token", responseData);
       navigate("/home");
+
+      toast.success('Login success ✅');
       
     } catch (error) {
       console.log(error);
@@ -72,6 +76,7 @@ export default function LoginPage() {
 
   return (
     <>
+      <ToastContainer />
       <section className="relative flex flex-wrap lg:h-screen lg:items-center">
         <div className="w-full px-4 py-12 border sm:px-6 sm:py-16 lg:w-1/2 lg:px-8 lg border-opacity-70 backdrop-blur bg-secondary">
           <div className="max-w-lg mx-auto text-center">

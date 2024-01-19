@@ -1,11 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
 import HomeNav from "../components/HomeNav";
 // import { fetchCat } from '../stores/catSlice';
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { fetchDataCat } from "../stores/fetchDataAsync";
-import axios from 'axios'
-import { ToastContainer, toast } from 'react-toastify';
-
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function CatsPage() {
   const { data } = useSelector((state) => state.cats);
@@ -33,7 +32,34 @@ export default function CatsPage() {
     }
   };
 
-  
+  const [user, setUser] = useState({
+    id: 0,
+    email: "",
+    subscription: "free",
+  });
+
+  const fetchUser = async () => {
+    const { data } = await axios.get("http://localhost:3000/users/me", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    });
+
+    setUser(data);
+  };
+
+  useEffect(() => {
+    if (localStorage.getItem("access_token")) {
+      fetchUser();
+    }
+  }, []);
+
+  const isLogin = useMemo(() => {
+    return !!localStorage.getItem("access_token");
+  }, []);
+
+  const isFree = isLogin && user.subscription === "free";
+  const isPremium = isLogin && user.subscription === "premium";
 
   useEffect(() => {
     dispatch(fetchDataCat());
@@ -46,7 +72,8 @@ export default function CatsPage() {
         <div className="flex flex-wrap gap-20 justify-center my-10">
           {/* <h1 className="flex text-center "> Loading... </h1> */}
           <>
-            {data.map((el) => {
+          {}
+            {data?.slice(0, 4).map((el) => {
               return (
                 <>
                   <div className="grid grid-col-5 items-center justify-center w-full bg-white rounded-lg shadow-lg md:w-64">
