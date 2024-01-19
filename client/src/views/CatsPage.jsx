@@ -16,7 +16,7 @@ export default function CatsPage() {
   const handleOnClick = async (id) => {
     try {
       await axios.post(
-        `http://localhost:3000/cats`,
+        `https://cat.fernandoasite.online//cats`,
         {
           url: id,
         },
@@ -60,7 +60,7 @@ export default function CatsPage() {
   });
 
   const fetchUser = async () => {
-    const { data } = await axios.get("http://localhost:3000/users/me", {
+    const { data } = await axios.get("https://cat.fernandoasite.online/users/me", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       },

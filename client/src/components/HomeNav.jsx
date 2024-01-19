@@ -35,7 +35,7 @@ export default function HomeNav() {
   };
 
   const fetchUser = async () => {
-    const { data } = await axios.get("http://localhost:3000/users/me", {
+    const { data } = await axios.get("https://cat.fernandoasite.online/users/me", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       },
@@ -55,7 +55,7 @@ export default function HomeNav() {
   const handleOnUpgrade = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:3000/payments/midtrans/token",
+        "https://cat.fernandoasite.online/payments/midtrans/token",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -67,7 +67,7 @@ export default function HomeNav() {
             orderId: data.orderId,
           };
 
-          await axios.patch("http://localhost:3000/users/me/upgrade", form, {
+          await axios.patch("https://cat.fernandoasite.online/users/me/upgrade", form, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
